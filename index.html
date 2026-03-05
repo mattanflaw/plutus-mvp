@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLUTUS</title>
+
+<style>
+
+body{
+margin:0;
+font-family:system-ui,sans-serif;
+background: radial-gradient(circle at top,#0b0b18,#000);
+color:white;
+}
+
+/* Sections */
+
+.section{
+display:none;
+animation:fade .25s ease;
+padding:6px;
+}
+
+.section.active{
+display:block;
+}
+
+@keyframes fade{
+from{opacity:0; transform:translateY(8px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+/* Layout */
+
+.container{
+padding:22px;
+padding-bottom:140px;
+}
+
+/* Header */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px;
+border-bottom:1px solid rgba(255,255,255,0.04);
+}
+
+.logo{
+letter-spacing:4px;
+font-weight:700;
+color:#a5b4fc;
+}
+
+/* Avatar */
+
+.avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+overflow:hidden;
+cursor:pointer;
+border:2px solid rgba(255,255,255,0.08);
+}
+
+.avatar img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* Cards */
+
+.card{
+background:rgba(255,255,255,0.03);
+backdrop-filter:blur(18px);
+border-radius:26px;
+padding:24px;
+margin-bottom:24px;
+border:1px solid rgba(255,255,255,0.04);
+transition:.25s;
+box-shadow:0 0 18px rgba(0,0,0,0.4);
+}
+
+.card:hover{
+transform:translateY(-3px);
+}
+
+/* Wallet */
+
+.wallet-value{
+font-size:36px;
+font-weight:700;
+color:#a5b4fc;
+}
+
+/* Rank Badge */
+
+.rank-badge{
+display:inline-block;
+padding:10px 22px;
+border-radius:16px;
+background:linear-gradient(90deg,#5865f2,#7c3aed);
+margin-top:14px;
+font-weight:700;
+cursor:pointer;
+}
+
+/* XP BAR */
+
+.xp-container{
+margin-top:18px;
+}
+
+.xp-track{
+width:100%;
+height:12px;
+background:#1b1b2d;
+border-radius:30px;
+overflow:hidden;
+}
+
+.xp-fill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#5865f2,#a855f7);
+transition:0.5s ease;
+}
+
+.xp-text{
+margin-top:8px;
+font-size:14px;
+opacity:0.8;
+}
+
+/* Bottom Navigation */
+
+.bottom-nav{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+width:92%;
+height:68px;
+background:rgba(12,12,25,.85);
+backdrop-filter:blur(18px);
+border-radius:26px;
+display:flex;
+justify-content:space-around;
+align-items:center;
+padding:0 12px;
+z-index:2000;
+box-shadow:0 0 25px rgba(0,0,0,.6);
+}
+
+.nav-btn{
+flex:1;
+height:100%;
+background:none;
+border:none;
+color:white;
+font-size:14px;
+letter-spacing:1px;
+opacity:.8;
+cursor:pointer;
+transition:.25s;
+}
+
+.nav-btn.active{
+color:#a5b4fc;
+text-shadow:0 0 12px rgba(165,180,252,.6);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<div class="logo">PLUTUS</div>
+
+<div class="avatar" onclick="changeAvatar()">
+<img id="avatarImg" src="https://via.placeholder.com/80">
+</div>
+</div>
+
+<input type="file" id="avatarInput" style="display:none">
+
+<div class="container">
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="section active">
+
+<div class="card">
+
+<h3>Empire Rank</h3>
+
+<p>Level <span id="level">1</span></p>
+
+<div class="rank-badge" onclick="navigate('empireRankPage',document.querySelector('.nav-btn'))" id="empireRank">
+Member
+</div>
+
+<div class="xp-container">
+<div class="xp-track">
+<div class="xp-fill" id="xpBar"></div>
+</div>
+
+<div class="xp-text">
+XP <span id="xp">0</span> / <span id="xpNext">100</span>
+</div>
+</div>
+
+</div>
+
+<!-- WALLET CARD HOME -->
+
+<div class="card" style="cursor:pointer" onclick="navigate('wallet',document.querySelectorAll('.nav-btn')[1])">
+
+<h3>Wallet</h3>
+
+<p class="wallet-value" id="walletBalanceHome">0.00 DH</p>
+
+<p style="opacity:.7;font-size:14px">Cliquez pour gérer votre wallet</p>
+
+</div>
+
+<!-- MISSION DU JOUR CARD HOME -->
+
+<div class="card" style="cursor:pointer" onclick="navigate('activityCenter',document.querySelectorAll('.nav-btn')[2])">
+
+<h3>Mission du jour</h3>
+
+<p style="opacity:.7;font-size:14px">
+Accédez au centre d'activités pour voir vos missions
+</p>
+
+</div>
+
+</div>
+
+<!-- WALLET SECTION -->
+
+<div id="wallet" class="section">
+
+<div class="card">
+
+<h2>Wallet</h2>
+
+<p class="wallet-value" id="walletBalance">0.00 DH</p>
+
+<br>
+
+<button style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(90deg,#5865f2,#7c3aed);color:white;font-weight:bold;">
+Recharger
+</button>
+
+<br><br>
+
+<button style="width:100%;padding:15px;border:none;border-radius:14px;background:#2a2a35;color:white;font-weight:bold;">
+Retirer
+</button>
+
+</div>
+
+</div>
+
+<!-- ACTIVITY CENTER -->
+
+<div id="activityCenter" class="section">
+
+<div class="card">
+
+<h2>Centre d'Activités</h2>
+
+<!-- WATCH ADS ACTIVITY -->
+
+<div class="card" style="cursor:pointer;background:rgba(255,255,255,0.05)"
+onclick="alert('Fonction Watch Ads bientôt connectée à MoneyTag')">
+
+<h3>🎥 Watch Ads</h3>
+
+<p style="opacity:.7;font-size:14px">
+Regardez des publicités pour gagner des récompenses
+</p>
+
+</div>
+
+<p style="opacity:.6;margin-top:20px">
+Autres missions seront ajoutées ultérieurement.
+</p>
+
+</div>
+
+</div>
+
+<!-- EMPIRE RANK -->
+
+<div id="empireRankPage" class="section">
+
+<div class="card">
+<h2>Empire Ranking</h2>
+
+<p>Member → Operator → Manager → Director → Emperor</p>
+
+<br>
+
+<button onclick="navigate('dashboard',document.querySelector('.nav-btn'))"
+style="width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(90deg,#5865f2,#7c3aed);color:white;font-weight:bold;">
+Retour Dashboard
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+
+<div class="bottom-nav">
+
+<button class="nav-btn active" onclick="navigate('dashboard',this)">HOME</button>
+
+<button class="nav-btn" onclick="navigate('wallet',this)">WALLET</button>
+
+<button class="nav-btn" onclick="navigate('activityCenter',this)">ACTIVITY</button>
+
+<button class="nav-btn" onclick="navigate('empireRankPage',this)">RANK</button>
+
+</div>
+
+<script>
+
+/* Navigation */
+
+function navigate(section,btn){
+
+document.querySelectorAll(".section").forEach(el=>{
+el.classList.remove("active");
+});
+
+document.getElementById(section).classList.add("active");
+
+document.querySelectorAll(".nav-btn").forEach(el=>{
+el.classList.remove("active");
+});
+
+if(btn) btn.classList.add("active");
+
+}
+
+/* Avatar System */
+
+function changeAvatar(){
+document.getElementById("avatarInput").click();
+}
+
+document.getElementById("avatarInput").addEventListener("change",function(e){
+
+let file=e.target.files[0];
+if(!file) return;
+
+let reader=new FileReader();
+
+reader.onload=function(ev){
+
+localStorage.setItem("avatar",ev.target.result);
+avatarImg.src=ev.target.result;
+
+}
+
+reader.readAsDataURL(file);
+
+});
+
+const avatarImg=document.getElementById("avatarImg");
+
+let savedAvatar=localStorage.getItem("avatar");
+
+if(savedAvatar){
+avatarImg.src=savedAvatar;
+}
+
+/* Rank Logic */
+
+function getEmpireRank(level){
+
+if(level >= 5) return "Emperor";
+if(level === 4) return "Director";
+if(level === 3) return "Manager";
+if(level === 2) return "Operator";
+return "Member";
+
+}
+
+/* Storage */
+
+let xp=parseInt(localStorage.getItem("xp"))||0;
+let level=parseInt(localStorage.getItem("level"))||1;
+let balance=parseFloat(localStorage.getItem("balance"))||0;
+
+/* UI */
+
+function updateUI(){
+
+let xpNext=level*100;
+
+document.getElementById("level").innerText=level;
+
+document.getElementById("empireRank").innerText=
+getEmpireRank(level);
+
+document.getElementById("xp").innerText=xp;
+document.getElementById("xpNext").innerText=xpNext;
+
+document.getElementById("walletBalance").innerText=
+balance.toFixed(2)+" DH";
+
+document.getElementById("walletBalanceHome").innerText=
+balance.toFixed(2)+" DH";
+
+let progress=(xp/xpNext)*100;
+document.getElementById("xpBar").style.width=progress+"%";
+
+}
+
+/* Init */
+
+updateUI();
+
+</script>
+
+</body>
+</html>
